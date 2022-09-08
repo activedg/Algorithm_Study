@@ -13,6 +13,7 @@ for _ in range(N):
     nodes[a] = Node(a, b, c)
 count = 0
 inorder_path = []
+## 중위 순회를 한 번 진행 하여 가장 마지막 진행 노드 파악
 def inorder(node: Node):
     if node.left != -1:
         inorder(nodes[node.left])
@@ -24,6 +25,7 @@ def s_inorder(node: Node):
     if node.left != -1:
         s_inorder(nodes[node.left])
         count += 1
+    ## 가장 마지막 방문 노드에서 exit
     if node == inorder_path[-1]:
         print(count)
         exit()
