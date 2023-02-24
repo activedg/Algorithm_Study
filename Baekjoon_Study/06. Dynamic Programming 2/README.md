@@ -37,3 +37,7 @@ for i in range(1, N+1):
             dp[i][j] = max(dp[i-1][j], items[i-1][1] + dp[i-1][j-w])
 print(dp[N][K])
 ```
+---
+# LCS(Longest Common Subsequence)
+DP를 활용하여 가장 공통되는 부분 문자열을 구할 수 있다.
+<img width="733" alt="image" src="https://user-images.githubusercontent.com/70252417/221196748-1fbcb91e-48ff-4ecc-bced-d3c52dc27ff4.png">
