@@ -1,35 +1,46 @@
-# psum => prefix 다 더한것
-# beauty : psum[0] - psum[1] + psum[2] -psum[3] + ... (-1) ** (n-1) psum[n-1]
-## arr이 재정렬 될 수 있으면 beauty of psum의 최대 가능 밸류 찾기
+from collections import deque
 
-## n = 5
-## arr = [3, 4, 5, 1 ,1]
 
-# 모든 원소 다 받아서 정렬, 가장 작은 원소 순으로 들어가기
+def solution(boards):
+    # 상, 하, 좌, 우 4 방향중 하나 선택
+    # 장애물이나 맨 끝에 부딪힐 때 까지 미끄러져 이동하는 것을 한 번으로
+    # G 위치에 멈춰 서야함
+    gx, gy = -1, -1
+    q = deque()
+    N, M = len(boards), len(boards[0])
+    for i in range(N):
+        for j in range(M):
+            if boards[i][j] == 'R':
+                q.append((i, j))
+            elif boards[i][j] == 'G':
+                gx, gy = i, j
 
-def getMaxBeauty(arr):
-    # 작은 순서대로 정렬
-    arr.sort()
-    # 투 포인터로 돌면서, 맨 뒤 -> 맨 앞 순서 대로 넣기
-    start, end = 0, len(arr) - 1
-    arr_s = []
-    while start <= end:
-        if start == end:
-            arr_s.append(arr[start])
-            break
+    dx = (-1, 1, 0, 0)
+    dy = (0, 0, -1, 1)
 
-        arr_s.append(arr[end])
-        arr_s.append(arr[start])
-        start, end = start + 1, end - 1
+    visited = [[0 for _ in range(M)] for _ in range(N)]
 
-    # psum 구하기
-    psum = arr_s
-    for i in range(1, len(arr_s)):
-        psum[i] += psum[i-1]
+    while q:
+        x, y = q.popleft()
+        if x == gx and y == gy: break
 
-    res = 0
-    for j in range(len(psum)):
-        if j % 2: res -= psum[j]
-        else: res += psum[j]
-    return res
-print(getMaxBeauty([3,1,5,1,4]))
+        for i in range(4):
+            tx, ty = x, y
+            while True:
+                nx, ny = tx + dx[i], ty + dy[i]
+                if nx < 0 or nx >= N or ny < 0 or ny >= M:
+                    visited[tx][ty] = visited[x][y] + 1
+                    q.append((tx, ty))
+                    break
+
+                if boards[nx][ny] == 'D' and not visited[tx][ty]:
+                    visited[tx][ty] = visited[x][y] + 1
+                    q.append((tx, ty))
+                    break
+
+                if visited[nx][ny]: break
+
+                tx, ty = nx, ny
+
+    return visited[gx][gy]
+print(solution(["...D..R", ".D.G...", "....D.D", "D....D.", "..D...."]))
